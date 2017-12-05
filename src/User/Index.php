@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -16,11 +17,19 @@ use Symfony\Component\Console\Helper\TableCell;
 class Index extends Command
 {
     use \Hue\Traits\Attributes;
+    use \Hue\Traits\Sort;
+
     protected function configure()
     {
         $this
-          ->addArgument('output', InputArgument::OPTIONAL, 'table|json (default - json)')
           ->setName('user:index')
+          ->addOption(
+              'sort',
+              's',
+              InputOption::VALUE_REQUIRED,
+              'Sort by column name'
+          )
+          ->addArgument('output', InputArgument::OPTIONAL, 'table|json (default - json)')
           ->setDescription('Command for listing bridge users')
         ;
     }
@@ -42,10 +51,13 @@ class Index extends Command
           return [
               'username' => $item->getUsername()
             , 'user' => $attributes->name
-            , 'lastUsed' => $item->getLastUseDate()
+            , 'lastLogin' => $item->getLastUseDate()
             , 'created' => $item->getCreateDate()
           ];
         }, $response);
+
+        $sort = ($input->getOption('sort'))? $input->getOption('sort') : 'created';
+        $data = $this->sortByKey($data, $sort);
 
         $table = new Table($output);
         $table

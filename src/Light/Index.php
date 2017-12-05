@@ -7,7 +7,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -16,11 +16,18 @@ use Symfony\Component\Console\Helper\TableCell;
 class Index extends Command
 {
     use \Hue\Traits\Attributes;
+    use \Hue\Traits\Sort;
 
     protected function configure()
     {
         $this
           ->setName('light:index')
+          ->addOption(
+              'sort',
+              's',
+              InputOption::VALUE_REQUIRED,
+              'Sort by column name'
+          )
           ->setDescription('Command for listing Philips Hue Bulbs')
         ;
     }
@@ -51,6 +58,9 @@ class Index extends Command
                     : null];
         }, $client->getLights());
 
+        $sort = ($input->getOption('sort'))? $input->getOption('sort') : 'id';
+        $lights = $this->sortByKey($lights, $sort);
+
         $table = new Table($output);
         $table
             ->setHeaders([
@@ -63,9 +73,7 @@ class Index extends Command
             ->setRows($lights);
         $table->render();
 
-
     }
-
 
 }
 
