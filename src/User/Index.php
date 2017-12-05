@@ -31,13 +31,7 @@ class Index extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-      $outputFormat = (empty($input->getArgument('output')))
-        ? 'json'
-        : $input->getArgument('output');
-
-        $bridge = new \Hue\Helpers\Bridge();
-        
-        $client = new \Phue\Client($bridge->getIp(), config('user'));
+        $client = new \Hue\Helpers\Client();
         
         $response = $client->sendCommand(
             new \Phue\Command\GetUsers()

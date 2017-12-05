@@ -9,10 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Symfony\Component\Console\Input\InputOption;
 
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\TableSeparator;
-use Symfony\Component\Console\Helper\TableCell;
-
 class Level extends Command
 {
     use \Hue\Traits\Attributes;
@@ -51,9 +47,6 @@ class Level extends Command
             ->transitionTime(1);
         $client->sendCommand($command);
     
-    // Sleep for transition time plus extra for request time
-    //usleep($transitionTime * 1000000 + 25000);
-//}
     }
 
 

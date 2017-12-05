@@ -9,7 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Symfony\Component\Console\Input\InputArgument;
 
-use Hue\Helpers\Config;
 class Create extends Command
 {
 
@@ -28,14 +27,9 @@ class Create extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = (empty($input->getArgument('name')))
-            ? 'hue'
-            : $input->getArgument('name');
+        $name = $input->getArgument('name');
 
-        $bridge = new \Hue\Helpers\Bridge();
-
-        $user = (!empty(config('user')))? config('user') : $name;
-        $client = new \Phue\Client($bridge->getIp(), $user);
+        $client = new \Hue\Helpers\Client($name);
         
         if(empty(config('user'))){
 
@@ -44,10 +38,10 @@ class Create extends Command
             for ($i = 1; $i <= $maxTries; ++$i) {
                 try {
                     $user = $client->sendCommand(
-                        new \Phue\Command\CreateUser('hue')
+                        new \Phue\Command\CreateUser($name)
                     );
                     
-                    dump($user);
+                    echo "\nUsername:\n  $user->username\n";
                     break;
                 } catch (\Phue\Transport\Exception\LinkButtonException $e) {
                     echo ".";
