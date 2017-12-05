@@ -1,0 +1,20 @@
+{
+    "name": "deac/hue",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Deac Karns",
+            "email": "peledies@gmail.com"
+        }
+    ],
+    "require": {
+        "sqmk/phue": "^1.7",
+        "symfony/console": "^4.0",
+        "symfony/var-dumper": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+              "Hue\\": "src/"
+        }
+    }
+}

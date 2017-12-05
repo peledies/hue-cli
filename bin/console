@@ -1,0 +1,23 @@
+<?php
+
+require_once 'vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+$console = new Application('Philips Hue Command Line Interface', '0.1.0');
+
+function config($get){
+	$config = new \Hue\Helpers\Config();
+	return $config->get(strtoupper($get));
+};
+
+// This is the relevant addition
+$console->addCommands(array(
+    new Hue\Light\Index(),
+    new Hue\Light\Level(),
+    new Hue\User\Create(),
+    new Hue\User\Index(),
+));
+// End of relevant addition
+
+$console->run();
