@@ -17,6 +17,7 @@ $console->addCommands(array(
     new Hue\Light\Level(),
     new Hue\User\Create(),
     new Hue\User\Index(),
+    new Hue\User\Delete(),
 ));
 // End of relevant addition
 
