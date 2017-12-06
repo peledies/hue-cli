@@ -14,10 +14,18 @@ function config($get){
 // This is the relevant addition
 $console->addCommands(array(
     new Hue\Light\Index(),
-    new Hue\Light\Level(),
+    new Hue\Light\Update(),
+    
+    new Hue\Group\Index(),
+
     new Hue\User\Create(),
     new Hue\User\Index(),
     new Hue\User\Delete(),
+
+    new Hue\Effect\Wave(),
+    new Hue\Effect\Loop(),
+    new Hue\Effect\LightPop(),
+    new Hue\Effect\GroupPop(),
 ));
 // End of relevant addition
 

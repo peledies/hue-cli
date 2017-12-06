@@ -1,5 +1,5 @@
 <?php
-namespace Hue\Light;
+namespace Hue\Group;
 
 require_once 'vendor/autoload.php';
 
@@ -20,8 +20,8 @@ class Index extends Command
     protected function configure()
     {
         $this
-          ->setName('light:index')
-          ->setDescription('Command for listing Philips Hue Bulbs')
+          ->setName('group:index')
+          ->setDescription('Command for listing light groups')
         ;
     }
 
@@ -35,43 +35,25 @@ class Index extends Command
         //$bridge = new \Hue\Helpers\Bridge();
         $client = new \Hue\Helpers\Client();
         
-        $lights = array_map(function($light){
-          $a = $this->getAttributes($light);
+        $groups = array_map(function($group){
+          $a = $this->getAttributes($group);
           return [
-              'id' => $light->getId()
+              'id' => $group->getId()
             , 'name' => $a->name
-            , 'state' => ($a->state->reachable)
-                    ? ($a->state->on)
-                      ? 'On'
-                      : 'Off'
-                    : null
-            , 'reachable' => ($a->state->reachable)? 'Yes':'No'
-            , 'brightness' => ($a->state->reachable)
-                    ? $a->state->bri
-                    : null
-            , 'hue' => $a->state->hue
-            , 'saturation' => $a->state->sat
-            , 'x' => $a->state->xy[0]
-            , 'y' => $a->state->xy[1]
-            , 'temp' => $a->state->ct
+            , 'all_on' => ($a->state->all_on)? "Yes":"No"
+            , 'any_on' => ($a->state->any_on)? "Yes":"No"
           ];
-        }, $client->getLights());
+        }, $client->getGroups());
 
         $table = new Table($output);
         $table
             ->setHeaders([
                 'ID'
               , 'Name'
-              , 'State'
-              , 'Reachable'
-              , 'Brightness'
-              , 'Hue'
-              , 'Saturation'
-              , 'X'
-              , 'Y'
-              , 'Temp'
+              , 'All On'
+              , 'Any On'
             ])
-            ->setRows($lights);
+            ->setRows($groups);
         $table->render();
 
 
