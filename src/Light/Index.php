@@ -53,9 +53,15 @@ class Index extends Command
                       : 'Off'
                     : null
             , 'reachable' => ($a->state->reachable)? 'Yes':'No'
-            , 'level' => ($a->state->reachable)
+            , 'brightness' => ($a->state->reachable)
                     ? $a->state->bri
-                    : null];
+                    : null
+            , 'hue' => $a->state->hue
+            , 'saturation' => $a->state->sat
+            , 'x' => $a->state->xy[0]
+            , 'y' => $a->state->xy[1]
+            , 'temp' => $a->state->ct
+          ];
         }, $client->getLights());
 
         $sort = ($input->getOption('sort'))? $input->getOption('sort') : 'id';
@@ -68,7 +74,12 @@ class Index extends Command
               , 'Name'
               , 'State'
               , 'Reachable'
-              , 'Level'
+              , 'Brightness'
+              , 'Hue'
+              , 'Saturation'
+              , 'X'
+              , 'Y'
+              , 'Temp'
             ])
             ->setRows($lights);
         $table->render();
