@@ -35,34 +35,57 @@ class LightPop extends Command
 
         $original = $client->sendCommand(
             new \Phue\Command\GetLightById($input->getOption('id'))
-        )->getRGB();
+        );
+
+        if(property_exists($this->getAttributes($original)->state, 'colormode')){
+          $og = [
+              'id'=> $input->getOption('id')
+            , 'bri' => $original->getBrightness()
+            , 'hue' => $original->getHue()
+            , 'sat' => $original->getSaturation()
+            , 'ct' => $original->getColorTemp()
+          ];
+
+          $og = array_merge($og, $original->getXY());
+        }else{
+          $og = [
+              'id'=>$input->getOption('id')
+            , 'bri'=>$original->getBrightness()
+          ];
+        }
 
         $light = new \Phue\Command\SetLightState($input->getOption('id'));
 
+        $xy = \Phue\Helper\ColorConversion::convertRGBToXY(
+            $input->getOption('red')
+          , $input->getOption('green')
+          , $input->getOption('blue')
+        );
+
         $client->sendCommand(
           $light
-            ->rgb(
-                  $input->getOption('red')
-                , $input->getOption('green')
-                , $input->getOption('blue')
-              )
+            ->hue(0)
+            ->saturation(255)
+            ->colorTemp(153)
+            ->xy($xy['x'], $xy['y'])
             ->transitionTime(0)
         );
         
         usleep(300000);
         
-        $client->sendCommand(
-          $light
-            ->rgb(
-                  $original['red']
-                , $original['green']
-                , $original['blue']
-              )
-            ->transitionTime(2)
-        );
+        if(array_key_exists('hue', $og)){
+          $command = $light
+              ->hue($og['hue'])
+              ->saturation($og['sat'])
+              ->colorTemp($og['ct'])
+              ->xy($og['x'], $og['y'])
+              ->transitionTime(2);
+        }else{
+          $command = $light
+              ->brightness( (int) $og['bri'] )
+              ->transitionTime(2);
+        }
     
     }
 
-
 }
-
