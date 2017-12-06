@@ -86,6 +86,7 @@ class LightPop extends Command
               ->transitionTime(2);
         }
     
+        $client->sendCommand($command);
     }
 
 }
