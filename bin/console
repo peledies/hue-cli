@@ -26,6 +26,7 @@ $console->addCommands(array(
     new Hue\Effect\Loop(),
     new Hue\Effect\LightPop(),
     new Hue\Effect\GroupPop(),
+    new Hue\Effect\GroupWave(),
 ));
 // End of relevant addition
 

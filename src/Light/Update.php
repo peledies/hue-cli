@@ -12,11 +12,13 @@ use Symfony\Component\Console\Input\InputOption;
 class Update extends Command
 {
     use \Hue\Traits\Attributes;
+    use \Hue\Traits\Validate;
 
     protected function configure()
     {
         $this
           ->addOption('id','i',InputOption::VALUE_REQUIRED,'Bulb ID')
+          ->addOption('name','m',InputOption::VALUE_REQUIRED,'Bulb Name')
           ->addOption('red','r',InputOption::VALUE_REQUIRED,'Red value (0 - 255)')
           ->addOption('green','g',InputOption::VALUE_REQUIRED,'Green value (0 - 255)')
           ->addOption('blue','b',InputOption::VALUE_REQUIRED,'Blue value (0 - 255)')
@@ -32,13 +34,17 @@ class Update extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $client = new \Hue\Helpers\Client();
+        
+        $this->validate($input, ['i','m','r','g','b']);
 
-        $light = new \Phue\Command\SetLightState($input->getOption('id'));
+        $this->nameToIdOrId($client);
+
+        $light = new \Phue\Command\SetLightState($this->id);
 
         $xy = \Phue\Helper\ColorConversion::convertRGBToXY(
-            $input->getOption('red')
-          , $input->getOption('green')
-          , $input->getOption('blue')
+            $this->red
+          , $this->green
+          , $this->blue
         );
 
         $command = $light

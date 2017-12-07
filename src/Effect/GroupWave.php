@@ -9,9 +9,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use Symfony\Component\Console\Input\InputOption;
 
-class Wave extends Command
+class GroupWave extends Command
 {
     use \Hue\Traits\Sort;
+    use \Hue\Traits\Validate;
+    use \Hue\Traits\Attributes;
 
     // starting value for red
     protected $red = 0;
@@ -25,9 +27,11 @@ class Wave extends Command
     protected function configure()
     {
         $this
-          ->setName('effect:wave')
+          ->setName('effect:group-wave')
+          ->addOption('id','i',InputOption::VALUE_REQUIRED,'Group ID')
+          ->addOption('name','m',InputOption::VALUE_REQUIRED,'Group Name')
           ->addOption('transition','t',InputOption::VALUE_REQUIRED,'Transition Speed (seconds)')
-          ->setDescription('front to back wave')
+          ->setDescription('front to back wave for a group')
         ;
     }
 
@@ -38,16 +42,27 @@ class Wave extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $client = new \Hue\Helpers\Client();
+        
+        $this->validate($input, ['i','m']);
+        $this->nameToIdOrId($client);
 
         $transition = (is_null($input->getOption('transition')))? 3 : (int) $input->getOption('transition');
+
+        $light_ids = array_shift(array_map(function($group){
+          return $this->getAttributes($group)->lights;
+        }, $client->getGroups()));
+        
+        $light_obs = array_filter($client->getLights(), function($light) use ($light_ids){
+          return (in_array($light->getId(), $light_ids));
+        });
 
         $lights = array_map(function($light){
           return [
               'id' => $light->getId()
             , 'name' => $light->getName()
           ];
-        }, $client->getLights());
-        
+        }, $light_obs);
+
         $groups = [];
         // group into row arrays
         for ($i = 'A'; $i !== 'Z'; $i++){
