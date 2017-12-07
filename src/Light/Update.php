@@ -22,6 +22,7 @@ class Update extends Command
           ->addOption('red','r',InputOption::VALUE_REQUIRED,'Red value (0 - 255)')
           ->addOption('green','g',InputOption::VALUE_REQUIRED,'Green value (0 - 255)')
           ->addOption('blue','b',InputOption::VALUE_REQUIRED,'Blue value (0 - 255)')
+          ->addOption('transition','t',InputOption::VALUE_REQUIRED,'Transition time (seconds)')
           ->setName('light:update')
           ->setDescription('Command for updating light color')
         ;
@@ -41,6 +42,10 @@ class Update extends Command
 
         $light = new \Phue\Command\SetLightState($this->id);
 
+        $transition = (is_null($input->getOption('transition')))
+          ? 1
+          : (int) $input->getOption('transition');
+
         $xy = \Phue\Helper\ColorConversion::convertRGBToXY(
             $this->red
           , $this->green
@@ -53,7 +58,7 @@ class Update extends Command
             ->saturation(255)
             ->colorTemp(153)
             ->xy($xy['x'], $xy['y'])
-            ->transitionTime(1);
+            ->transitionTime($transition);
 
         $client->sendCommand($command);
     
