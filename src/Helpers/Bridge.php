@@ -14,8 +14,7 @@ class Bridge
 
         // Don't continue if bad response
         if ($response === false) {
-            echo "Request failed. Ensure that you have internet connection.";
-            exit(1);
+        	throw new \Exception("Request failed. Ensure that you have internet connection, and that the bridge is properly connected", 1);
         }
 
         // Parse the JSON response

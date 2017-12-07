@@ -20,7 +20,7 @@ class GroupPop extends Command
           ->addOption('red','r',InputOption::VALUE_REQUIRED,'Red value (0 - 255)')
           ->addOption('green','g',InputOption::VALUE_REQUIRED,'Green value (0 - 255)')
           ->addOption('blue','b',InputOption::VALUE_REQUIRED,'Blue value (0 - 255)')
-          ->setName('effect:grouppop')
+          ->setName('effect:group-pop')
           ->setDescription('flash a color then return')
         ;
     }
