@@ -44,24 +44,30 @@ class Index extends Command
         
         $lights = array_map(function($light){
           $a = $this->getAttributes($light);
-          return [
-              'id' => $light->getId()
-            , 'name' => $a->name
-            , 'state' => ($a->state->reachable)
-                    ? ($a->state->on)
-                      ? 'On'
-                      : 'Off'
-                    : null
-            , 'reachable' => ($a->state->reachable)? 'Yes':'No'
-            , 'brightness' => ($a->state->reachable)
-                    ? $a->state->bri
-                    : null
-            , 'hue' => $a->state->hue
-            , 'saturation' => $a->state->sat
-            , 'x' => $a->state->xy[0]
-            , 'y' => $a->state->xy[1]
-            , 'temp' => $a->state->ct
+          $standard = [
+                'id' => $light->getId()
+              , 'name' => $a->name
+              , 'state' => ($a->state->reachable)
+                      ? ($a->state->on)
+                        ? 'On'
+                        : 'Off'
+                      : null
+              , 'reachable' => ($a->state->reachable)? 'Yes':'No'
+              , 'brightness' => ($a->state->reachable)
+                      ? $a->state->bri
+                      : null
           ];
+          if(property_exists($a->state, 'colormode')){
+            $color = [
+                'hue' => $a->state->hue
+              , 'saturation' => $a->state->sat
+              , 'x' => $a->state->xy[0]
+              , 'y' => $a->state->xy[1]
+              , 'temp' => $a->state->ct
+            ];
+            $standard = array_merge($standard, $color);
+          }
+          return $standard;
         }, $client->getLights());
 
         $sort = ($input->getOption('sort'))? $input->getOption('sort') : 'id';

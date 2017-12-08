@@ -62,7 +62,7 @@ class Create extends Command
     }
 
     private function writeToConfig($line){
-        $file = fopen(".env", "a") or die("Unable to open file!");
+        $file = fopen("~/.hue", "a") or die("Unable to open file!");
         fwrite($file, $line);
         fclose($file);
     }

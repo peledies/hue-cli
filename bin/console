@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 
-$console = new Application('Philips Hue Command Line Interface', '0.1.0');
+$console = new Application('Hue', '@package_version@');
 
 function config($get){
 	$config = new \Hue\Helpers\Config();
