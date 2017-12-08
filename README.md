@@ -4,7 +4,7 @@ A symfony CLI for Philips Hue bulbs
 
 ## Install
 ```
-php -r "copy('https://raw.githubusercontent.com/peledies/hue-cli/0.1.3/hue.phar', 'hue'); copy('hue', '/usr/local/bin/hue'); unlink('hue.phar');"
+curl -O https://raw.githubusercontent.com/peledies/hue-cli/0.1.3/hue.phar && chmod 755 hue.phar && mv hue.phar /usr/local/bin/hue
 ```
 
 ## Useage
