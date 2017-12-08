@@ -10,7 +10,7 @@ class Client extends \Phue\Client
 		$bridge = new \Hue\Helpers\Bridge();
 
         if(is_null($name) && empty(config('user'))){
-        	throw new \Exception("No user defined in .env file", 1);
+        	throw new \Exception("No user defined in ~/.hue file", 1);
         }
 
 		$user = (!is_null($name))? $name : config('user');
