@@ -23,10 +23,11 @@ $console->addCommands(array(
     new Hue\User\Delete(),
 
     new Hue\Effect\Wave(),
-    new Hue\Effect\Loop(),
     new Hue\Effect\LightPop(),
     new Hue\Effect\GroupPop(),
     new Hue\Effect\GroupWave(),
+    new Hue\Effect\Snake(),
+    new Hue\Effect\Checker(),
 ));
 // End of relevant addition
 
