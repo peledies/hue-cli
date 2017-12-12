@@ -67,7 +67,7 @@ class GroupWave extends Command
         // group into row arrays
         for ($i = 'A'; $i !== 'Z'; $i++){
           $groups[] = array_filter($lights, function($light) use ($i){
-            return (preg_match("/$i/",$light['name']));
+            return (preg_match("/$i-/",$light['name']));
           });
         }
 

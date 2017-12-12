@@ -7,7 +7,7 @@ class Config
 {
 	
 	public function __construct(){
-		foreach (parse_ini_file('.env') as $key => $value) {
+		foreach (parse_ini_file($_SERVER['HOME'].'/.hue') as $key => $value) {
 			$this->$key = $value;
 		}
 	}
