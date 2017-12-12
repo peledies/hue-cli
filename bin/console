@@ -28,6 +28,7 @@ $console->addCommands(array(
     new Hue\Effect\GroupWave(),
     new Hue\Effect\Snake(),
     new Hue\Effect\Checker(),
+    new Hue\Effect\DiagonalWave(),
 ));
 // End of relevant addition
 
