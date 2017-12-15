@@ -28,6 +28,7 @@ class Wave extends Command
           ->setName('effect:wave')
           ->addOption('transition','t',InputOption::VALUE_REQUIRED,'Transition Speed (seconds)')
           ->setDescription('front to back wave')
+          ->addOption('christmas','c',InputOption::VALUE_NONE,'Christmas Mode')
         ;
     }
 
@@ -40,6 +41,8 @@ class Wave extends Command
         $client = new \Hue\Helpers\Client();
 
         $transition = (is_null($input->getOption('transition')))? 3 : (int) $input->getOption('transition');
+        $this->christmas = $input->getOption('christmas');
+        $this->christmas_phase = $this->christmas;
 
         $lights = array_map(function($light){
           return [
@@ -67,11 +70,19 @@ class Wave extends Command
         $wave = 0;
         while(true){
 
-          $xy = \Phue\Helper\ColorConversion::convertRGBToXY(
-              $this->red
-            , $this->green
-            , $this->blue
-          );
+          $this->christmas_phase = !$this->christmas_phase;
+
+          $xy = ($this->christmas)
+            ? \Phue\Helper\ColorConversion::convertRGBToXY(
+                  ($this->christmas_phase)? 255 : 0
+                , ($this->christmas_phase)? 0 : 255
+                , 0
+              )
+            : \Phue\Helper\ColorConversion::convertRGBToXY(
+                  rand(0, 255)
+                , rand(0, 255)
+                , rand(0, 255)
+              );
 
           foreach ($groups as $key => $group) {
 
@@ -93,12 +104,8 @@ class Wave extends Command
           }
 
           $wave++;
-          $this->red = rand(0, 255);
-          $this->green = rand(0, 255);
-          $this->blue = rand(0, 255);
 
           dump("Wave - $wave");
-          dump("R: $this->red, G: $this->green B: $this->blue");
         }
          
 

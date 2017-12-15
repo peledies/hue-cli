@@ -28,6 +28,7 @@ class DiagonalWave extends Command
           ->setName('effect:diagonal-wave')
           ->setDescription('a diagonal wave')
           ->addOption('transition','t',InputOption::VALUE_REQUIRED,'Transition Speed (seconds)')
+          ->addOption('christmas','c',InputOption::VALUE_NONE,'Christmas Mode')
         ;
     }
 
@@ -41,6 +42,8 @@ class DiagonalWave extends Command
       $client = new \Hue\Helpers\Client();
 
       $transition = (is_null($input->getOption('transition')))? 3 : (int) $input->getOption('transition');
+      $this->christmas = $input->getOption('christmas');
+      $this->christmas_phase = $this->christmas;
 
       $lights = array_map(function($light){
           return [
@@ -77,12 +80,19 @@ class DiagonalWave extends Command
 
       $wave = 0;
       while(true){
+        $this->christmas_phase = !$this->christmas_phase;
 
-        $xy = \Phue\Helper\ColorConversion::convertRGBToXY(
-            $this->red
-          , $this->green
-          , $this->blue
-        );
+        $xy = ($this->christmas)
+          ? \Phue\Helper\ColorConversion::convertRGBToXY(
+                ($this->christmas_phase)? 255 : 0
+              , ($this->christmas_phase)? 0 : 255
+              , 0
+            )
+          : \Phue\Helper\ColorConversion::convertRGBToXY(
+                rand(0, 255)
+              , rand(0, 255)
+              , rand(0, 255)
+            );
 
         foreach ($dig as $key => $group) {
           foreach ($group as $bulb) {
@@ -103,12 +113,8 @@ class DiagonalWave extends Command
         }
 
         $wave++;
-        $this->red = rand(0, 255);
-        $this->green = rand(0, 255);
-        $this->blue = rand(0, 255);
 
         dump("Wave - $wave");
-        dump("R: $this->red, G: $this->green B: $this->blue");
       }    
 
     }

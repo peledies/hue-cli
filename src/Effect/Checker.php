@@ -28,6 +28,7 @@ class Checker extends Command
           ->setName('effect:checker')
           ->setDescription('checker board pattern')
           ->addOption('transition','t',InputOption::VALUE_REQUIRED,'Transition Speed (seconds)')
+          ->addOption('christmas','c',InputOption::VALUE_NONE,'Christmas Mode')
         ;
     }
 
@@ -41,6 +42,8 @@ class Checker extends Command
       $this->client = new \Hue\Helpers\Client();
 
       $this->transition = (is_null($input->getOption('transition')))? 3 : (int) $input->getOption('transition');
+      $this->christmas = $input->getOption('christmas');
+      $this->christmas_phase = $this->christmas;
 
       $lights = array_map(function($light){
           return [
@@ -89,13 +92,17 @@ class Checker extends Command
 
       $wave = 0;
       while(true){
-        
         $this->checker($odd);
         
-        sleep($this->transition * 2);
-        
+        if(!$this->christmas){
+          sleep($this->transition * 2);
+        }
+
+        $this->christmas_phase = !$this->christmas_phase;
         $this->checker($even);
 
+
+        sleep($this->transition * 2);
         $wave++;
         dump("Wave - $wave");
 
@@ -103,12 +110,18 @@ class Checker extends Command
     }
 
     private function checker(Array $lights){
-
-        $xy = \Phue\Helper\ColorConversion::convertRGBToXY(
-            rand(0, 255)
-          , rand(0, 255)
-          , rand(0, 255)
-        );
+        
+        $xy = ($this->christmas)
+          ? \Phue\Helper\ColorConversion::convertRGBToXY(
+                ($this->christmas_phase)? 255 : 0
+              , ($this->christmas_phase)? 0 : 255
+              , 0
+            )
+          : \Phue\Helper\ColorConversion::convertRGBToXY(
+                rand(0, 255)
+              , rand(0, 255)
+              , rand(0, 255)
+            );
 
         foreach ($lights as $bulb) {
           $light = new \Phue\Command\SetLightState($bulb['id']);
